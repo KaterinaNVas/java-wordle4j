@@ -19,10 +19,7 @@ public class WordleDictionaryLoader {
              BufferedReader br = new BufferedReader(reader)) {
             String line;
             while ((line = br.readLine()) != null) {
-                if (line.length() == 5) {
-                    String cleaned = line.trim().toLowerCase().replace("ё", "е");
-                    words.add(cleaned);
-                }
+                    words.add(line);
             }
             return new WordleDictionary(words);
         } catch (IOException e) {
