@@ -79,6 +79,27 @@ public class WordleDictionary {
         return words.get(index);
     }
 
+    public List<String> getWordsByLength(int length) {
+        List<String> result = new ArrayList<>();
+
+        for (String word : getWords()) {
+            if (word.length() == length) {
+                result.add(word);
+            }
+        }
+        return result;
+    }
+
+    public String getRandomWordByLength(int length) {
+        List<String> wordsOfLength = getWordsByLength(length);
+        if (wordsOfLength.isEmpty()) {
+            return null;
+        }
+
+        int randomIndex = (int) (Math.random() * wordsOfLength.size());
+        return wordsOfLength.get(randomIndex);
+    }
+
     public void setWords(List<String> words) {
         this.words = normalizeWords(words);
     }
@@ -149,16 +170,7 @@ public class WordleDictionary {
         }
     }
 
-    public List<String> getWordsByLength(int length) {
-        List<String> result = new ArrayList<>();
 
-        for (String word : getWords()) {
-            if (word.length() == length) {
-                result.add(word);
-            }
-        }
-        return result;
-    }
 }
 
 

@@ -27,12 +27,14 @@ public class WordleGame {
     private final List<String> usedWords;       // использованные слова
     private boolean gameFinished;                 // игра завершена?
     private boolean gameWon;                      // игра выиграна?
+    private final List<String> usedHints;
 
 
     public WordleGame(WordleDictionary dictionary, String answer, int maxAttempts) {
         this.dictionary = dictionary;
         this.answer = WordleDictionary.normalizeString(answer);
         this.maxAttempts = maxAttempts;
+        this.usedHints = new ArrayList<>();
         this.steps = 0;
         this.usedWords = new ArrayList<>();
         this.gameFinished = false;
@@ -40,6 +42,14 @@ public class WordleGame {
 
     }
 
+
+    public boolean checkAnswer(String guess) {
+        if (guess == null) {
+            return false;
+        }
+
+        return WordleDictionary.normalizeString(guess).equals(answer);
+    }
 
     public String[] makeGuess(String guess) throws InvalidWordLengthException,
             WordNotFoundInDictionaryException,
@@ -64,7 +74,7 @@ public class WordleGame {
         for (int i = 0; i < getAnswer().length(); i++) {
             result[i] = WordleDictionary.getLetterStatus(getAnswer(), guess, i);
         }
-        if (guess.equals(getAnswer())) {
+        if (checkAnswer(guess)) {
             setGameWon(true);
             setGameFinished(true);
             return result;
@@ -76,6 +86,35 @@ public class WordleGame {
         }
 
         return result;
+    }
+
+    public String getHint() {
+        if (isGameFinished()) {
+            return "Игра уже завершена. Загаданное слово: " + getAnswer();
+        }
+
+        String hint = getDictionary().getRandomWordByLength(getAnswer().length());
+
+        if (hint == null) {
+            return "Нет слов подходящей длины в словаре.";
+        }
+
+        if (getUsedWords().contains(hint) || getUsedHints().contains(hint)) {
+            List<String> wordsOfLength = getDictionary().getWordsByLength(getAnswer().length());
+            String foundWord = null;
+            for (String word : wordsOfLength) {
+                if (!getUsedWords().contains(word) && !getUsedHints().contains(word)) {
+                    foundWord = word;
+                    break;
+                }
+            }
+            if (foundWord == null) {
+                return "Нет доступных слов для подсказки.";
+            }
+            hint = foundWord;
+        }
+        addUsedHint(hint);
+        return "Подсказка: " + hint;
     }
     public void setSteps(int steps) {
         this.steps = steps;
@@ -109,12 +148,20 @@ public class WordleGame {
         return new ArrayList<>(usedWords);
     }
 
+    public List<String> getUsedHints() {
+        return new ArrayList<>(usedHints);
+    }
+
     public boolean isGameFinished() {
         return gameFinished;
     }
 
     public boolean isGameWon() {
         return gameWon;
+    }
+
+    public void addUsedHint(String hint) {
+        usedHints.add(hint);
     }
 
     public void addUsedWord(String word) {
