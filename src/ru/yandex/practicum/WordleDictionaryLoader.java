@@ -1,8 +1,9 @@
 package ru.yandex.practicum;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import ru.yandex.practicum.exception.DictionaryEmptyException;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +16,18 @@ public class WordleDictionaryLoader {
 
     public WordleDictionary loadWords(String filename) {
         List<String> words = new ArrayList<>();
-        try (FileReader reader = new FileReader(filename);
-             BufferedReader br = new BufferedReader(reader)) {
+
+
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), "UTF-8"))) {
             String line;
             while ((line = br.readLine()) != null) {
                     words.add(line);
             }
+            if (words.isEmpty()) {
+                throw new DictionaryEmptyException("Файл словаря пуст: " + filename);
+            }
+
             return new WordleDictionary(words);
         } catch (IOException e) {
             throw new RuntimeException(e);
