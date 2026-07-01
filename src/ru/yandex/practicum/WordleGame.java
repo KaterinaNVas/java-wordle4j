@@ -24,12 +24,12 @@ import java.util.Map;
 public class WordleGame {
     private final String answer;                  // загаданное слово
     private final int maxAttempts;                // максимум попыток
-    private int steps;                            // сколько попыток сделано
     private final WordleDictionary dictionary;    // словарь
     private final List<String> usedWords;       // использованные слова
+    private final List<String> usedHints;
+    private int steps;                            // сколько попыток сделано
     private boolean gameFinished;                 // игра завершена?
     private boolean gameWon;                      // игра выиграна?
-    private final List<String> usedHints;
 
 
     public WordleGame(WordleDictionary dictionary, String answer, int maxAttempts) {
@@ -212,18 +212,6 @@ public class WordleGame {
         return hint.toString();
     }
 
-    public void setSteps(int steps) {
-        this.steps = steps;
-    }
-
-    public void setGameFinished(boolean gameFinished) {
-        this.gameFinished = gameFinished;
-    }
-
-    public void setGameWon(boolean gameWon) {
-        this.gameWon = gameWon;
-    }
-
     public String getAnswer() {
         return answer;
     }
@@ -234,6 +222,10 @@ public class WordleGame {
 
     public int getSteps() {
         return steps;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
     }
 
     public WordleDictionary getDictionary() {
@@ -252,8 +244,16 @@ public class WordleGame {
         return gameFinished;
     }
 
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
+    }
+
     public boolean isGameWon() {
         return gameWon;
+    }
+
+    public void setGameWon(boolean gameWon) {
+        this.gameWon = gameWon;
     }
 
     public void addUsedHint(String hint) {

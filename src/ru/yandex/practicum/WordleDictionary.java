@@ -16,84 +16,9 @@ public class WordleDictionary {
         this.words = normalizeWords(rawWords);
     }
 
-    private List<String> normalizeWords(List<String> rawWords) {
-        List<String> result = new ArrayList<>();
-        for (String word : rawWords) {
-            if (word == null) {
-                continue;
-            }
-            String cleaned = word.trim().toLowerCase().replace("ё", "е");
-            if (cleaned.length() == 5 && isRussianWord(cleaned)) {
-                result.add(cleaned);
-            }
-        }
-        return result;
-    }
-
     public static String normalizeString(String string) {
         if (string == null) return "";
         return string.trim().toLowerCase().replace("ё", "е");
-    }
-
-    private boolean isRussianWord(String word) {
-        for (char c : word.toCharArray()) {
-            if (!isRussianLetter(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean isRussianLetter(char c) {
-        return (c >= 'а' && c <= 'я') || c == 'ё';
-    }
-
-    public boolean contains(String word) {
-        if (word == null) return false;
-        return words.contains(normalizeString(word));
-    }
-
-    public int size() {
-        return words.size();
-    }
-
-    public boolean isEmpty() {
-        return words.isEmpty();
-    }
-
-    public String getRandomWord() {
-        if (words.isEmpty()) {
-            return null;
-        }
-        int index = (int) (Math.random() * words.size());
-        return words.get(index);
-    }
-
-    public String getRandomWordByLength(int length) {
-        List<String> wordsOfLength = getWordsByLength(length);
-        if (wordsOfLength.isEmpty()) {
-            return null;
-        }
-        int randomIndex = (int) (Math.random() * wordsOfLength.size());
-        return wordsOfLength.get(randomIndex);
-    }
-
-    public void setWords(List<String> words) {
-        this.words = normalizeWords(words);
-    }
-
-    public List<String> getWords() {
-        return new ArrayList<>(words);
-    }
-
-    public List<String> getWordsByLength(int length) {
-        List<String> result = new ArrayList<>();
-        for (String word : words) {
-            if (word.length() == length) {
-                result.add(word);
-            }
-        }
-        return result;
     }
 
     public static char getLetterStatus(String word, String guess, int position) {
@@ -162,5 +87,80 @@ public class WordleDictionary {
             }
         }
         return count;
+    }
+
+    private List<String> normalizeWords(List<String> rawWords) {
+        List<String> result = new ArrayList<>();
+        for (String word : rawWords) {
+            if (word == null) {
+                continue;
+            }
+            String cleaned = word.trim().toLowerCase().replace("ё", "е");
+            if (cleaned.length() == 5 && isRussianWord(cleaned)) {
+                result.add(cleaned);
+            }
+        }
+        return result;
+    }
+
+    private boolean isRussianWord(String word) {
+        for (char c : word.toCharArray()) {
+            if (!isRussianLetter(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isRussianLetter(char c) {
+        return (c >= 'а' && c <= 'я') || c == 'ё';
+    }
+
+    public boolean contains(String word) {
+        if (word == null) return false;
+        return words.contains(normalizeString(word));
+    }
+
+    public int size() {
+        return words.size();
+    }
+
+    public boolean isEmpty() {
+        return words.isEmpty();
+    }
+
+    public String getRandomWord() {
+        if (words.isEmpty()) {
+            return null;
+        }
+        int index = (int) (Math.random() * words.size());
+        return words.get(index);
+    }
+
+    public String getRandomWordByLength(int length) {
+        List<String> wordsOfLength = getWordsByLength(length);
+        if (wordsOfLength.isEmpty()) {
+            return null;
+        }
+        int randomIndex = (int) (Math.random() * wordsOfLength.size());
+        return wordsOfLength.get(randomIndex);
+    }
+
+    public List<String> getWords() {
+        return new ArrayList<>(words);
+    }
+
+    public void setWords(List<String> words) {
+        this.words = normalizeWords(words);
+    }
+
+    public List<String> getWordsByLength(int length) {
+        List<String> result = new ArrayList<>();
+        for (String word : words) {
+            if (word.length() == length) {
+                result.add(word);
+            }
+        }
+        return result;
     }
 }

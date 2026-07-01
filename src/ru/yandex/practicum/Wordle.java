@@ -1,16 +1,20 @@
 package ru.yandex.practicum;
 
-import ru.yandex.practicum.exception.*;
+import ru.yandex.practicum.exception.DictionaryLoadException;
+import ru.yandex.practicum.exception.InvalidWordLengthException;
+import ru.yandex.practicum.exception.WordAlreadyUsedException;
+import ru.yandex.practicum.exception.WordNotFoundInDictionaryException;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Wordle {
 
-    private static PrintWriter log;
     private static final int WORD_LENGTH = 5;
     private static final int MAX_ATTEMPTS = 6;
     private static final String DICTIONARY_FILE = "words_ru.txt";
+    private static PrintWriter log;
 
     public static void main(String[] args) {
         try {

@@ -2,7 +2,9 @@ package ru.yandex.practicum;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.exception.*;
+import ru.yandex.practicum.exception.InvalidWordLengthException;
+import ru.yandex.practicum.exception.WordAlreadyUsedException;
+import ru.yandex.practicum.exception.WordNotFoundInDictionaryException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WordleGameTest {
 
+    private final String targetWord = "слово";
     private WordleDictionary dictionary;
     private WordleGame game;
-    private final String targetWord = "слово";
 
     @BeforeEach
     void setUp() {
