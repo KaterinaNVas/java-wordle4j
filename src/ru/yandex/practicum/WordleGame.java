@@ -5,7 +5,9 @@ import ru.yandex.practicum.exception.WordAlreadyUsedException;
 import ru.yandex.practicum.exception.WordNotFoundInDictionaryException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 в этом классе хранится словарь и состояние игры
@@ -51,9 +53,11 @@ public class WordleGame {
         return WordleDictionary.normalizeString(guess).equals(answer);
     }
 
-    public String[] makeGuess(String guess) throws InvalidWordLengthException,
+    public String makeGuess(String guess)
+            throws InvalidWordLengthException,
             WordNotFoundInDictionaryException,
             WordAlreadyUsedException {
+
         if (guess.length() != getAnswer().length()) {
             throw new InvalidWordLengthException(getAnswer().length(), guess.length());
         }
@@ -69,11 +73,8 @@ public class WordleGame {
         addUsedWord(guess);
         incrementSteps();
 
-        String[] result = new String[getAnswer().length()];
+        String result = WordleDictionary.getReadyString(getAnswer(), guess);
 
-        for (int i = 0; i < getAnswer().length(); i++) {
-            result[i] = WordleDictionary.getLetterStatus(getAnswer(), guess, i);
-        }
         if (checkAnswer(guess)) {
             setGameWon(true);
             setGameFinished(true);
@@ -88,33 +89,144 @@ public class WordleGame {
         return result;
     }
 
+    private String[] convertResultToStringArray(char[] result) {
+        String[] stringResult = new String[result.length];
+        for (int i = 0; i < result.length; i++) {
+            stringResult[i] = String.valueOf(result[i]);
+        }
+        return stringResult;
+    }
+
     public String getHint() {
         if (isGameFinished()) {
             return "Игра уже завершена. Загаданное слово: " + getAnswer();
         }
 
-        String hint = getDictionary().getRandomWordByLength(getAnswer().length());
-
-        if (hint == null) {
-            return "Нет слов подходящей длины в словаре.";
+        if (getUsedWords().isEmpty()) {
+            return "Сделайте первый ход, чтобы получить подсказку!";
         }
 
-        if (getUsedWords().contains(hint) || getUsedHints().contains(hint)) {
-            List<String> wordsOfLength = getDictionary().getWordsByLength(getAnswer().length());
-            String foundWord = null;
-            for (String word : wordsOfLength) {
-                if (!getUsedWords().contains(word) && !getUsedHints().contains(word)) {
-                    foundWord = word;
+        // 1. Получаем все слова нужной длины
+        List<String> possibleWords = new ArrayList<>(getDictionary().getWordsByLength(getAnswer().length()));
+
+        // 2. Убираем использованные слова и подсказки
+        possibleWords.removeAll(getUsedWords());
+        possibleWords.removeAll(getUsedHints());
+
+        // 3. Анализируем все использованные слова
+        List<Character> absentLetters = new ArrayList<>();
+        List<Character> presentLetters = new ArrayList<>();
+        Map<Integer, Character> correctPositions = new HashMap<>();
+        Map<Integer, List<Character>> wrongPositions = new HashMap<>();
+
+        for (String usedWord : getUsedWords()) {
+            String result = WordleDictionary.getReadyString(getAnswer(), usedWord);
+
+            for (int i = 0; i < result.length(); i++) {
+                char status = result.charAt(i);
+                char letter = usedWord.charAt(i);
+
+                if (status == '+') {
+                    correctPositions.put(i, letter);
+                } else if (status == '^') {
+                    if (!presentLetters.contains(letter)) {
+                        presentLetters.add(letter);
+                    }
+                    // Запоминаем, что буква НЕ на этой позиции
+                    wrongPositions.computeIfAbsent(i, k -> new ArrayList<>()).add(letter);
+                } else if (status == '-') {
+                    if (!absentLetters.contains(letter)) {
+                        absentLetters.add(letter);
+                    }
+                }
+            }
+        }
+
+        // 4. Фильтруем слова
+        List<String> filteredWords = new ArrayList<>();
+
+        for (String word : possibleWords) {
+            boolean isValid = true;
+
+            // Проверка 1: нет неподходящих букв
+            for (char c : absentLetters) {
+                if (word.indexOf(c) != -1) {
+                    isValid = false;
                     break;
                 }
             }
-            if (foundWord == null) {
-                return "Нет доступных слов для подсказки.";
+            if (!isValid) continue;
+
+            // Проверка 2: есть все необходимые буквы
+            for (char c : presentLetters) {
+                if (word.indexOf(c) == -1) {
+                    isValid = false;
+                    break;
+                }
             }
-            hint = foundWord;
+            if (!isValid) continue;
+
+            // Проверка 3: буквы на местах совпадают
+            for (Map.Entry<Integer, Character> entry : correctPositions.entrySet()) {
+                int pos = entry.getKey();
+                char letter = entry.getValue();
+                if (word.charAt(pos) != letter) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (!isValid) continue;
+
+            // Проверка 4: буквы НЕ на неправильных местах
+            for (Map.Entry<Integer, List<Character>> entry : wrongPositions.entrySet()) {
+                int pos = entry.getKey();
+                for (char letter : entry.getValue()) {
+                    if (word.charAt(pos) == letter) {
+                        isValid = false;
+                        break;
+                    }
+                }
+                if (!isValid) break;
+            }
+            if (!isValid) continue;
+
+            filteredWords.add(word);
         }
+
+        // 5. Выбираем случайное слово
+        if (filteredWords.isEmpty()) {
+            return "Нет подходящих слов для подсказки.";
+        }
+
+        int randomIndex = (int) (Math.random() * filteredWords.size());
+        String hint = filteredWords.get(randomIndex);
+
         addUsedHint(hint);
         return "Подсказка: " + hint;
+    }
+
+
+    public String getLetterHint() {
+        if (isGameFinished()) {
+            return "Игра уже завершена.";
+        }
+        // Собираем буквы, которые уже угаданы на своих местах
+        StringBuilder hint = new StringBuilder();
+        for (int i = 0; i < getAnswer().length(); i++) {
+            boolean found = false;
+            for (String word : getUsedWords()) {
+                if (word.charAt(i) == getAnswer().charAt(i)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                hint.append(getAnswer().charAt(i));
+            } else {
+                hint.append('_');
+            }
+        }
+        return hint.toString();
     }
     public void setSteps(int steps) {
         this.steps = steps;

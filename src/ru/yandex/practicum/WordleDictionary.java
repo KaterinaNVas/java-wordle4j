@@ -1,12 +1,7 @@
 package ru.yandex.practicum;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Set;
 
 /*
 этот класс содержит в себе список слов List<String>
@@ -24,6 +19,7 @@ public class WordleDictionary {
         this.words = normalizeWords(rawWords);
     }
 
+    // === НОРМАЛИЗАЦИЯ ===
 
     private List<String> normalizeWords(List<String> rawWords) {
         List<String> result = new ArrayList<>();
@@ -39,6 +35,13 @@ public class WordleDictionary {
         return result;
     }
 
+    public static String normalizeString(String string) {
+        if (string == null) return "";
+        return string.trim().toLowerCase().replace("ё", "е");
+    }
+
+    // === ПРОВЕРКИ ===
+
     private boolean isRussianWord(String word) {
         for (char c : word.toCharArray()) {
             if (!isRussianLetter(c)) {
@@ -52,11 +55,7 @@ public class WordleDictionary {
         return c >= 'а' && c <= 'я';
     }
 
-
-    public static String normalizeString(String string) {
-        if (string == null) return "";
-        return string.trim().toLowerCase().replace("ё", "е");
-    }
+    // === ОСНОВНЫЕ МЕТОДЫ ===
 
     public boolean contains(String word) {
         if (word == null) return false;
@@ -79,23 +78,11 @@ public class WordleDictionary {
         return words.get(index);
     }
 
-    public List<String> getWordsByLength(int length) {
-        List<String> result = new ArrayList<>();
-
-        for (String word : getWords()) {
-            if (word.length() == length) {
-                result.add(word);
-            }
-        }
-        return result;
-    }
-
     public String getRandomWordByLength(int length) {
         List<String> wordsOfLength = getWordsByLength(length);
         if (wordsOfLength.isEmpty()) {
             return null;
         }
-
         int randomIndex = (int) (Math.random() * wordsOfLength.size());
         return wordsOfLength.get(randomIndex);
     }
@@ -108,19 +95,54 @@ public class WordleDictionary {
         return new ArrayList<>(words);
     }
 
+    public List<String> getWordsByLength(int length) {
+        List<String> result = new ArrayList<>();
+        for (String word : words) {
+            if (word.length() == length) {
+                result.add(word);
+            }
+        }
+        return result;
+    }
+
+    // === СТАТИЧЕСКИЕ МЕТОДЫ ДЛЯ РАБОТЫ С БУКВАМИ ===
+
+    public static char getLetterStatus(String word, String guess, int position) {
+        if (word == null || guess == null) return '-';
+        if (position < 0 || position >= word.length() || position >= guess.length()) {
+            return '-';
+        }
+
+        char guessedChar = guess.charAt(position);
+        char wordChar = word.charAt(position);
+
+        if (guessedChar == wordChar) {
+            return '+';
+        } else if (word.indexOf(guessedChar) != -1) {
+            return '^';
+        } else {
+            return '-';
+        }
+    }
+
+    public static String getReadyString(String answer, String guess) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < answer.length(); i++) {
+            result.append(getLetterStatus(answer, guess, i));
+        }
+        return result.toString();
+    }
+
     public static boolean isLetterAtPosition(String word, char letter, int position) {
         if (word == null) return false;
         if (position < 0 || position >= word.length()) return false;
-        return word.indexOf(letter) == position;
+        return word.charAt(position) == letter;
     }
 
     public static boolean isLetterMatch(String word, String guess, int position) {
-        // Проверяет, совпадает ли буква в слове и догадке на позиции
-
         if (word == null || guess == null) {
             return false;
         }
-
         if (position < 0 || position >= word.length() || position >= guess.length()) {
             return false;
         }
@@ -128,13 +150,11 @@ public class WordleDictionary {
     }
 
     public static boolean isLetterInWord(String word, char letter) {
-        // Проверяет, есть ли буква в слове
         if (word == null) return false;
         return word.indexOf(letter) != -1;
     }
 
     public static int countLetterMatches(String word, String guess) {
-        // Считает количество совпадающих букв
         if (word == null || guess == null) return 0;
 
         String lowerWord = normalizeString(word);
@@ -147,31 +167,5 @@ public class WordleDictionary {
             }
         }
         return count;
-
     }
-
-    public static String getLetterStatus(String word, String guess, int position) {
-        // Возвращает статус буквы: "correct", "present", "absent"
-        if (word == null || guess == null) return "absent";
-
-        if (position < 0 || position >= word.length() || position >= guess.length()) {
-            return "absent";
-        }
-
-        char guessedChar = guess.charAt(position);
-        char wordChar = word.charAt(position);
-
-        if (guessedChar == wordChar) {
-            return "correct";
-        } else if (word.indexOf(guessedChar) != -1) {
-            return "present";
-        } else {
-            return "absent";
-        }
-    }
-
-
 }
-
-
-
