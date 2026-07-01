@@ -53,10 +53,7 @@ public class WordleGame {
         return WordleDictionary.normalizeString(guess).equals(answer);
     }
 
-    public String makeGuess(String guess)
-            throws InvalidWordLengthException,
-            WordNotFoundInDictionaryException,
-            WordAlreadyUsedException {
+    public String makeGuess(String guess) throws InvalidWordLengthException, WordNotFoundInDictionaryException, WordAlreadyUsedException {
 
         // ✅ Проверка: игра уже завершена
         if (isGameFinished()) {

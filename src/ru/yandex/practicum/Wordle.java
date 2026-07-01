@@ -135,8 +135,8 @@ public class Wordle {
                     log.flush();
                 }
 
-            } catch (InvalidWordLengthException | WordNotFoundInDictionaryException |
-                     WordAlreadyUsedException | IllegalStateException e) {
+            } catch (InvalidWordLengthException | WordNotFoundInDictionaryException | WordAlreadyUsedException |
+                     IllegalStateException e) {
                 System.out.println("Ошибка: " + e.getMessage());
                 log.println("Игровая ошибка: " + e.getMessage());
                 log.flush();
@@ -153,10 +153,17 @@ public class Wordle {
         for (int i = 0; i < result.length(); i++) {
             char status = result.charAt(i);
             switch (status) {
-                case '+': System.out.print("+"); break;
-                case '^': System.out.print("^"); break;
-                case '-': System.out.print("-"); break;
-                default: System.out.print("?");
+                case '+':
+                    System.out.print("+");
+                    break;
+                case '^':
+                    System.out.print("^");
+                    break;
+                case '-':
+                    System.out.print("-");
+                    break;
+                default:
+                    System.out.print("?");
             }
         }
         System.out.println();
