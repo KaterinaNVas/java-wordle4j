@@ -9,18 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-в этом классе хранится словарь и состояние игры
-    текущий шаг
-    всё что пользователь вводил
-    правильный ответ
-
-в этом классе нужны методы, которые
-    проанализируют совпадение слова с ответом
-    предложат слово-подсказку с учётом всего, что вводил пользователь ранее
-
-не забудьте про специальные типы исключений для игровых и неигровых ошибок
- */
 public class WordleGame {
     private final String answer;                  // загаданное слово
     private final int maxAttempts;                // максимум попыток
@@ -55,7 +43,6 @@ public class WordleGame {
 
     public String makeGuess(String guess) throws InvalidWordLengthException, WordNotFoundInDictionaryException, WordAlreadyUsedException {
 
-        // ✅ Проверка: игра уже завершена
         if (isGameFinished()) {
             throw new IllegalStateException("Игра уже завершена");
         }

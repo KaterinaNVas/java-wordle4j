@@ -14,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class WordleDictionaryLoaderTest {
 
     @TempDir
-    Path tempDir;
-
+    private Path tempDir;
 
     @Test
     void testLoadWordsFileNotFound() {
@@ -31,4 +30,5 @@ class WordleDictionaryLoaderTest {
         WordleDictionaryLoader loader = new WordleDictionaryLoader();
         assertThrows(DictionaryEmptyException.class, () -> loader.loadWords(filePath.toString()));
     }
+
 }

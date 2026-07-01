@@ -168,6 +168,7 @@ public class Wordle {
                     break;
                 default:
                     System.out.print("?");
+                    break;
             }
         }
         System.out.println();

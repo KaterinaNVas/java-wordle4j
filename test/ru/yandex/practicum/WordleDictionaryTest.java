@@ -18,7 +18,6 @@ class WordleDictionaryTest {
         dictionary = new WordleDictionary(rawWords);
     }
 
-
     @Test
     void testNormalizeString() {
         assertEquals("слово", WordleDictionary.normalizeString("СЛОВО"));
@@ -50,5 +49,4 @@ class WordleDictionaryTest {
         assertEquals(5, word.length());
         assertTrue(dictionary.contains(word));
     }
-
 }
