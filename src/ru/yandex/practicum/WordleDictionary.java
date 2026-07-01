@@ -1,7 +1,9 @@
 package ru.yandex.practicum;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /*
 этот класс содержит в себе список слов List<String>
@@ -52,7 +54,7 @@ public class WordleDictionary {
     }
 
     private boolean isRussianLetter(char c) {
-        return c >= 'а' && c <= 'я';
+        return (c >= 'а' && c <= 'я') || c == 'ё';
     }
 
     // === ОСНОВНЫЕ МЕТОДЫ ===
@@ -160,10 +162,16 @@ public class WordleDictionary {
         String lowerWord = normalizeString(word);
         String lowerGuess = normalizeString(guess);
 
+        Set<Character> wordLetters = new HashSet<>();
+        for (char c : lowerWord.toCharArray()) {
+            wordLetters.add(c);
+        }
+
         int count = 0;
         for (char c : lowerGuess.toCharArray()) {
-            if (lowerWord.indexOf(c) != -1) {
+            if (wordLetters.contains(c)) {
                 count++;
+                wordLetters.remove(c);
             }
         }
         return count;

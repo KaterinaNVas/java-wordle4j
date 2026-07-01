@@ -58,6 +58,11 @@ public class WordleGame {
             WordNotFoundInDictionaryException,
             WordAlreadyUsedException {
 
+        // ✅ Проверка: игра уже завершена
+        if (isGameFinished()) {
+            throw new IllegalStateException("Игра уже завершена");
+        }
+
         if (guess.length() != getAnswer().length()) {
             throw new InvalidWordLengthException(getAnswer().length(), guess.length());
         }
@@ -87,14 +92,6 @@ public class WordleGame {
         }
 
         return result;
-    }
-
-    private String[] convertResultToStringArray(char[] result) {
-        String[] stringResult = new String[result.length];
-        for (int i = 0; i < result.length; i++) {
-            stringResult[i] = String.valueOf(result[i]);
-        }
-        return stringResult;
     }
 
     public String getHint() {
@@ -210,12 +207,11 @@ public class WordleGame {
         if (isGameFinished()) {
             return "Игра уже завершена.";
         }
-        // Собираем буквы, которые уже угаданы на своих местах
         StringBuilder hint = new StringBuilder();
         for (int i = 0; i < getAnswer().length(); i++) {
             boolean found = false;
             for (String word : getUsedWords()) {
-                if (word.charAt(i) == getAnswer().charAt(i)) {
+                if (word.length() > i && word.charAt(i) == getAnswer().charAt(i)) {
                     found = true;
                     break;
                 }
@@ -282,5 +278,9 @@ public class WordleGame {
 
     public void incrementSteps() {
         steps++;
+    }
+
+    public int getRemainingAttempts() {
+        return maxAttempts - steps;
     }
 }
