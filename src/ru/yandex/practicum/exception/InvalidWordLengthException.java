@@ -1,8 +1,9 @@
 package ru.yandex.practicum.exception;
 
-public class InvalidWordLengthException extends RuntimeException{
+public class InvalidWordLengthException extends RuntimeException {
     public InvalidWordLengthException() {
     }
+
     public InvalidWordLengthException(int expectedLength, int actualLength) {
         super("Слово должно содержать " + expectedLength + " букв, а вы ввели " + actualLength);
     }

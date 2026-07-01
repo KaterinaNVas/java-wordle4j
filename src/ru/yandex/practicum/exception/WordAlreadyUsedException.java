@@ -1,13 +1,12 @@
 package ru.yandex.practicum.exception;
 
-public class WordAlreadyUsedException extends Exception{
+public class WordAlreadyUsedException extends Exception {
     public WordAlreadyUsedException() {
     }
 
     public WordAlreadyUsedException(String word) {
         super("Слово '" + word + "' уже было использовано!");
     }
-
 
 
     public WordAlreadyUsedException(String message, Throwable cause) {
