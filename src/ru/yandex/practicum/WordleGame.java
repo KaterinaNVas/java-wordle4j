@@ -103,14 +103,11 @@ public class WordleGame {
             return "Сделайте первый ход, чтобы получить подсказку!";
         }
 
-        // 1. Получаем все слова нужной длины
         List<String> possibleWords = new ArrayList<>(getDictionary().getWordsByLength(getAnswer().length()));
 
-        // 2. Убираем использованные слова и подсказки
         possibleWords.removeAll(getUsedWords());
         possibleWords.removeAll(getUsedHints());
 
-        // 3. Анализируем все использованные слова
         List<Character> absentLetters = new ArrayList<>();
         List<Character> presentLetters = new ArrayList<>();
         Map<Integer, Character> correctPositions = new HashMap<>();
@@ -129,7 +126,6 @@ public class WordleGame {
                     if (!presentLetters.contains(letter)) {
                         presentLetters.add(letter);
                     }
-                    // Запоминаем, что буква НЕ на этой позиции
                     wrongPositions.computeIfAbsent(i, k -> new ArrayList<>()).add(letter);
                 } else if (status == '-') {
                     if (!absentLetters.contains(letter)) {
@@ -139,13 +135,11 @@ public class WordleGame {
             }
         }
 
-        // 4. Фильтруем слова
         List<String> filteredWords = new ArrayList<>();
 
         for (String word : possibleWords) {
             boolean isValid = true;
 
-            // Проверка 1: нет неподходящих букв
             for (char c : absentLetters) {
                 if (word.indexOf(c) != -1) {
                     isValid = false;
@@ -154,7 +148,6 @@ public class WordleGame {
             }
             if (!isValid) continue;
 
-            // Проверка 2: есть все необходимые буквы
             for (char c : presentLetters) {
                 if (word.indexOf(c) == -1) {
                     isValid = false;
@@ -163,7 +156,6 @@ public class WordleGame {
             }
             if (!isValid) continue;
 
-            // Проверка 3: буквы на местах совпадают
             for (Map.Entry<Integer, Character> entry : correctPositions.entrySet()) {
                 int pos = entry.getKey();
                 char letter = entry.getValue();
@@ -174,7 +166,6 @@ public class WordleGame {
             }
             if (!isValid) continue;
 
-            // Проверка 4: буквы НЕ на неправильных местах
             for (Map.Entry<Integer, List<Character>> entry : wrongPositions.entrySet()) {
                 int pos = entry.getKey();
                 for (char letter : entry.getValue()) {
@@ -190,7 +181,6 @@ public class WordleGame {
             filteredWords.add(word);
         }
 
-        // 5. Выбираем случайное слово
         if (filteredWords.isEmpty()) {
             return "Нет подходящих слов для подсказки.";
         }

@@ -161,4 +161,12 @@ public class Wordle {
         }
         System.out.println();
     }
+
+    public static PrintWriter getLog() {
+        return log;
+    }
+
+    public static void setLog(PrintWriter log) {
+        Wordle.log = log;
+    }
 }

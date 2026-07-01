@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-/*
-этот класс содержит в себе список слов List<String>
-    его методы похожи на методы списка, но учитывают особенности игры
-    также этот класс может содержать рутинные функции по сравнению слов, букв и т.д.
- */
 public class WordleDictionary {
 
     private List<String> words = new ArrayList<>();
@@ -20,8 +14,6 @@ public class WordleDictionary {
     public WordleDictionary(List<String> rawWords) {
         this.words = normalizeWords(rawWords);
     }
-
-    // === НОРМАЛИЗАЦИЯ ===
 
     private List<String> normalizeWords(List<String> rawWords) {
         List<String> result = new ArrayList<>();
@@ -42,8 +34,6 @@ public class WordleDictionary {
         return string.trim().toLowerCase().replace("ё", "е");
     }
 
-    // === ПРОВЕРКИ ===
-
     private boolean isRussianWord(String word) {
         for (char c : word.toCharArray()) {
             if (!isRussianLetter(c)) {
@@ -56,8 +46,6 @@ public class WordleDictionary {
     private boolean isRussianLetter(char c) {
         return (c >= 'а' && c <= 'я') || c == 'ё';
     }
-
-    // === ОСНОВНЫЕ МЕТОДЫ ===
 
     public boolean contains(String word) {
         if (word == null) return false;
@@ -106,8 +94,6 @@ public class WordleDictionary {
         }
         return result;
     }
-
-    // === СТАТИЧЕСКИЕ МЕТОДЫ ДЛЯ РАБОТЫ С БУКВАМИ ===
 
     public static char getLetterStatus(String word, String guess, int position) {
         if (word == null || guess == null) return '-';
