@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 public class WordleDictionary {
 
     private List<String> words = new ArrayList<>();
