@@ -214,6 +214,7 @@ public class WordleGame {
         }
         return hint.toString();
     }
+
     public void setSteps(int steps) {
         this.steps = steps;
     }
